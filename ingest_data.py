@@ -32,7 +32,7 @@ def main(params):
 
 
     # create table
-    df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
+    df.head(n=0).to_sql(name=table, con=engine, if_exists='replace')
 
 
     # insert records to table
@@ -44,7 +44,7 @@ def main(params):
         df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
         df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
         
-        df.to_sql(name=table_name, con=engine, if_exists='append')
+        df.to_sql(name=table, con=engine, if_exists='append')
         
         t_end = time()
         
