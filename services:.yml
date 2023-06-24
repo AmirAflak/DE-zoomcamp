@@ -64,3 +64,4 @@ python ingest_data.py \
     --table=yellow_taxi_trips \
     --url=${URL} 
     
+docker build -t taxi_ingest:v001
