@@ -52,8 +52,8 @@ docker run -it \
     dpage/pgadmin4
 
 
-
-URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2019-01.csv.gz"
+# URL="https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2019-01.csv.gz"
+URL="http://172.18.0.1:8000/yellow_tripdata_2019-01.csv"
 
 python ingest_data.py \
     --user=root \
@@ -64,4 +64,16 @@ python ingest_data.py \
     --table=yellow_taxi_trips \
     --url=${URL} 
     
-docker build -t taxi_ingest:v001
+docker build -t taxi_ingest:v001 .
+
+URL="http://172.18.0.1:8000/yellow_tripdata_2019-01.csv"
+docker run -it \
+    --network=pg-network \
+    taxi_ingest:v001 \
+    --user=root \
+    --password=root \
+    --host=pg-database \
+    --port=5432 \
+    --db=ny_taxi \
+    --table=yellow_taxi_trips \
+    --url=${URL}  
