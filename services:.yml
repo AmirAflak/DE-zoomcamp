@@ -38,7 +38,7 @@ docker run -it \
   -e POSTGRES_DB="ny_taxi" \
   -v /home/mehrdad/Documents/DE-zoomcamp/ny_taxi_postgres_data:/var/lib/postgresql/data \
   -p 5432:5432 \
-  --network=pg-network \
+  --network pg-network \
   --name pg-database \
   postgres:13
 
