@@ -77,3 +77,7 @@ docker run -it \
     --db=ny_taxi \
     --table=yellow_taxi_trips \
     --url=${URL}  
+
+
+# pgcli command
+pgcli -h localhost -p 5432 -U root -W root -d ny_taxi
