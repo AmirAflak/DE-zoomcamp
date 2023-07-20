@@ -32,7 +32,7 @@ def extract_data(url):
 @task(log_prints=True, retries=3)
 def ingest_data(table_name, df):
     database_block = SqlAlchemyConnector.load("postgres")
-    with SqlAlchemyConnector.get_connection(begin=False) as engine:
+    with database_block.get_connection(begin=False) as engine:
         df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
         df.to_sql(name=table_name, con=engine, if_exists='append')
 
