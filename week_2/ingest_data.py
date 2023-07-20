@@ -44,7 +44,10 @@ def transform_data(df):
     df = df[df['passenger_count'] != 0]
     print(f"passengers count after: {df['passenger_count'].isnull().sum()}")
     return df
-    
+
+@flow(name="Sub Flow", log_prints=True)
+def log_subflow(table_name: str):
+    print(f"Sub Flow Logging for {table_name}")
     
     
 @flow(name="Ingest Flow")
@@ -55,7 +58,7 @@ def main(table_name: str):
     port = "5432"
     db = "ny_taxi"
     csv_url = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
-    
+    log_subflow(table_name)
     raw_data = extract_data(csv_url)
     tr_data = transform_data(raw_data)
     ingest_data(user, password, host, port, db, table_name, tr_data)
