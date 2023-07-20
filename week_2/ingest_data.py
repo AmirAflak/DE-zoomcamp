@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 import os
 import argparse
+import pandas as pd
 from time import time
 from datetime import timedelta
-import pandas as pd
 from sqlalchemy import create_engine
 from prefect import flow, task
 from prefect.tasks import task_input_hash
