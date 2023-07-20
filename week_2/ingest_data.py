@@ -48,13 +48,12 @@ def transform_data(df):
     
     
 @flow(name="Ingest Flow")
-def main():
+def main(table_name: str):
     user = "root"
     password = "root"
     host = "localhost"
     port = "5432"
     db = "ny_taxi"
-    table_name = "yellow_taxi_trips"
     csv_url = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
     
     raw_data = extract_data(csv_url)
@@ -62,4 +61,4 @@ def main():
     ingest_data(user, password, host, port, db, table_name, tr_data)
     
 if __name__ == '__main__':
-    main()
+    main("yellow_taxi_trips")
