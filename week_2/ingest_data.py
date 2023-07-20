@@ -7,6 +7,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from prefect import flow, task
 from prefect.tasks import task_input_hash
+from prefect_sqlalchemy import SqlAlchemyConnector
 
 @task(log_prints=True, retries=3, cache_key_fn=task_input_hash, cache_expiration=timedelta(days=1))
 def extract_data(url):
@@ -29,13 +30,11 @@ def extract_data(url):
     
 
 @task(log_prints=True, retries=3)
-def ingest_data(user, password, host, port, db, table_name, df):
-    
-    postgres_url = f'postgresql://{user}:{password}@{host}:{port}/{db}'
-    engine = create_engine(postgres_url)
-
-    df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
-    df.to_sql(name=table_name, con=engine, if_exists='append')
+def ingest_data(table_name, df):
+    database_block = SqlAlchemyConnector.load("postgres")
+    with SqlAlchemyConnector.get_connection(begin=False) as engine:
+        df.head(n=0).to_sql(name=table_name, con=engine, if_exists='replace')
+        df.to_sql(name=table_name, con=engine, if_exists='append')
 
 
 @task(log_prints=True)
@@ -52,16 +51,11 @@ def log_subflow(table_name: str):
     
 @flow(name="Ingest Flow")
 def main(table_name: str):
-    user = "root"
-    password = "root"
-    host = "localhost"
-    port = "5432"
-    db = "ny_taxi"
     csv_url = "https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz"
     log_subflow(table_name)
     raw_data = extract_data(csv_url)
     tr_data = transform_data(raw_data)
-    ingest_data(user, password, host, port, db, table_name, tr_data)
+    ingest_data(table_name, tr_data)
     
 if __name__ == '__main__':
     main("yellow_taxi_trips")
