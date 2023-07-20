@@ -24,6 +24,15 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     
     return df
     
+@task(log_prints=True)
+def to_parquet_and_save(df: pd.DataFrame, dataset_file: str) -> Path:
+    """Save dataframe as parquet format and return it's path"""
+    path = Path(f"{dataset_file}.parquet")
+    df.to_parquet(path, compression="gzip")
+    
+    return path
+
+
 @flow(log_prints=False)
 def etl_web_to_gcs() -> None:
     """The main function for ETL"""
@@ -36,7 +45,7 @@ def etl_web_to_gcs() -> None:
 
     df = fetch(dataset_url)
     tr_df = transform(df)
-
+    df_parquet_path = to_parquet_and_save(tr_df, dataset_file)
 
 if __name__ == '__main__':
     etl_web_to_gcs()
