@@ -4,12 +4,13 @@ from pathlib import Path
 from prefect import task, flow
 from prefect_gcp.cloud_storage import GcsBucket
 
-@task()
-fetch(url: str) -> pd.DataFrame:
-    """Read taxi data from a web source and pass dataFrame"""
+
+@task(retries=3)
+def fetch(url: str) -> pd.DataFrame:
+    """Read taxi data from web into pandas DataFrame"""
     return pd.read_csv(url)
     
-@flow()
+@flow(log_prints=False)
 def etl_web_to_gcs() -> None:
     """The main function for ETL"""
     color = "yellow"
