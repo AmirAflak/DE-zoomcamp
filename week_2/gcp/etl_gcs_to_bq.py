@@ -14,10 +14,6 @@ def extract_from_gcs(color: str, year: int, month: int) -> Path:
     
     return Path(f"{gcs_path}")
 
-
-
-
-
 @flow()
 def etl_gcs_to_bq():
     """ETL flow to get data from gcs and insert that into BigQuery""" 
@@ -26,3 +22,6 @@ def etl_gcs_to_bq():
     month = 1
     
     path = extract_from_gcs(color, year,  month)
+    
+if __name__ == '__main__':
+    etl_gcs_to_bq()
