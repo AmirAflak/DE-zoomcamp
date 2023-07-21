@@ -5,7 +5,7 @@ from prefect import task, flow
 from prefect_gcp.cloud_storage import GcsBucket
 from prefect_gcp import GcpCredentials
 
-@task(log_prints=True)
+@task(retries=3)
 def extract_from_gcs(color: str, year: int, month: int) -> Path:
     """Download file from gcs and save it locally"""
     gcs_path = f"{color}_tripdata_{year}-{month:02}.parquet"
@@ -14,7 +14,13 @@ def extract_from_gcs(color: str, year: int, month: int) -> Path:
     
     return Path(f"{gcs_path}")
 
-@flow()
+@task()
+def transform(path: Path) -> pd.DataFrame:
+    """Convert to dataFrame and data cleaning"""
+    return pd.read_parquet(path)
+    
+
+@flow(log_prints=True)
 def etl_gcs_to_bq():
     """ETL flow to get data from gcs and insert that into BigQuery""" 
     color = "yellow"
@@ -22,6 +28,7 @@ def etl_gcs_to_bq():
     month = 2
     
     path = extract_from_gcs(color, year,  month)
+    tr_data = transform(path)
     
 if __name__ == '__main__':
     etl_gcs_to_bq()
