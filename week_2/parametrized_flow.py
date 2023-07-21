@@ -51,6 +51,13 @@ def etl_web_to_gcs(year: int, month: int, color: str) -> None:
     df_parquet_path = to_parquet_and_save(tr_df, dataset_file)
     load_to_gcs(df_parquet_path)
     
+@flow(log_prints=True)
+def etl_parent_flow(months: list[int] = [2, 3],
+                    year: int = 2021,
+                    color: str = 'yellow'):
+    for month in months:
+        etl_web_to_gcs(year, month, color)
+    
 
 if __name__ == '__main__':
-    etl_web_to_gcs(2020, 2, 'yellow')
+    etl_parent_flow(months=[3, 6, 7], year=2020, color='green')
