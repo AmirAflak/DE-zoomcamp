@@ -30,7 +30,7 @@ def to_bq(df: pd.DataFrame) -> None:
     load_dotenv()
     gcp_credentials_block = GcpCredentials.load("rides-gcs-creds")
     
-    dataframe.to_gbq(
+    df.to_gbq(
                 destination_table=os.getenv('BQ_TABLE_NAME'), 
                 project_id=os.getenv('BQ_PROJECT_ID'),
                 credentials=gcp_credentials_block.get_credentials_from_service_account(),
