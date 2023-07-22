@@ -17,7 +17,7 @@ def transform(df: pd.DataFrame) -> pd.DataFrame:
     """Doing some transformations on passed data"""
     
     df.lpep_pickup_datetime = pd.to_datetime(df.lpep_pickup_datetime)
-    df.tpep_dropoff_datetime = pd.to_datetime(df.lpep_dropoff_datetime)       
+    df.lpep_dropoff_datetime = pd.to_datetime(df.lpep_dropoff_datetime)       
     
     print(df.head(2))
     print(f"columns: {df.dtypes}")
