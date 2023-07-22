@@ -2,9 +2,11 @@
 import pandas as pd
 from pathlib import Path
 from prefect import task, flow
+from prefect.tasks import task_input_hash
+from datetime import timedelta
 from prefect_gcp.cloud_storage import GcsBucket
 
-@task(retries=3)
+@task(retries=3, cache_key_fn=task_input_hash, cache_expiration=timedelta(days=1))
 def fetch(url: str) -> pd.DataFrame:
     """Read taxi data from web into pandas DataFrame"""
     
@@ -14,8 +16,8 @@ def fetch(url: str) -> pd.DataFrame:
 def transform(df: pd.DataFrame) -> pd.DataFrame:
     """Doing some transformations on passed data"""
     
-    df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
-    df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)       
+    df.lpep_pickup_datetime = pd.to_datetime(df.lpep_pickup_datetime)
+    df.tpep_dropoff_datetime = pd.to_datetime(df.lpep_dropoff_datetime)       
     
     print(df.head(2))
     print(f"columns: {df.dtypes}")
