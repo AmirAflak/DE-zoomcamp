@@ -1,0 +1,6 @@
+pandas
+prefect
+prefect-sqlalchemy
+prefect-gcp[cloud_storage]
+protobuf
+pyarrow
